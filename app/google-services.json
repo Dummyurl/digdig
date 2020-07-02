@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "246266886200",
+    "firebase_url": "https://tuktuk-728cc.firebaseio.com",
+    "project_id": "tuktuk-728cc",
+    "storage_bucket": "tuktuk-728cc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:246266886200:android:2048202cb253191d3e8ecd",
+        "android_client_info": {
+          "package_name": "com.kredivation.tuktuk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "246266886200-r1sngbvhav95s4squl3e9ulid6k4vts2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5vr7ZY8q3CR7-rprx2xdRBK7UH7wK8Bc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "246266886200-r1sngbvhav95s4squl3e9ulid6k4vts2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
