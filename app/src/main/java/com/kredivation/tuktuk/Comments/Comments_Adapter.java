@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 public class Comments_Adapter extends RecyclerView.Adapter<Comments_Adapter.CustomViewHolder> {

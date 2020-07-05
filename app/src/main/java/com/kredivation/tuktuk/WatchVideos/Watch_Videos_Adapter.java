@@ -16,7 +16,7 @@ import com.kredivation.tuktuk.Home.Home_Get_Set;
 
 import java.util.ArrayList;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 public class Watch_Videos_Adapter extends RecyclerView.Adapter<Watch_Videos_Adapter.CustomViewHolder > {

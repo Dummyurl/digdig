@@ -16,7 +16,7 @@ import com.kredivation.tuktuk.SimpleClasses.Variables;
 
 import java.util.ArrayList;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 public class Gif_Adapter extends RecyclerView.Adapter<Gif_Adapter.CustomViewHolder >{

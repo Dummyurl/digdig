@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 public class Following_Adapter extends RecyclerView.Adapter<Following_Adapter.CustomViewHolder > {

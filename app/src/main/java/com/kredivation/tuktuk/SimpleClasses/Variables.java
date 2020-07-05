@@ -9,7 +9,9 @@ import java.util.Locale;
 
 public class Variables {
 
-
+    public static String watermark ="TUKTUK.mp4";
+    public static String appName ="TUKTUK";
+    public static String filePath = Environment.getExternalStorageDirectory() +"/TUKTUK/";
     public static String device="android";
 
     public static int screen_width;
@@ -19,7 +21,6 @@ public class Variables {
     public static String SelectedAudio_AAC ="SelectedAudio.aac";
 
     public static String root= Environment.getExternalStorageDirectory().toString();
-
 
     public static int max_recording_duration=18000;
     public static int recording_duration=18000;
@@ -31,7 +32,7 @@ public class Variables {
     public static String gallery_trimed_video=root + "/gallery_trimed_video.mp4";
     public static String gallery_resize_video=root + "/gallery_resize_video.mp4";
 
-    public static String app_folder=root+"/Tittic/";
+    public static String app_folder=root+"/"+appName+"/";
 
     public static SharedPreferences sharedPreferences;
     public static String pref_name="pref_name";
@@ -46,7 +47,7 @@ public class Variables {
 
 
 
-    public static String tag="tictic_";
+    public static String tag="tuktuk_";
 
     public static String Selected_sound_id="null";
 
@@ -86,8 +87,10 @@ public class Variables {
     public static String privacy_policy="https://www.termsfeed.com/privacy-policy/4dec1a564a01ea0d15ed86c97c4e8253";
 
     
-    public static String domain="http://domain.com/API/tictic/index.php?p=";
-    public static String base_url="http://domain.com/API/tictic/";
+//    public static String domain="http://domain.com/API/tictic/index.php?p=";
+//    public static String base_url="http://domain.com/API/tictic/";
+    public static String domain="https://kredivation.com/digdig/API/index.php?p=";
+    public static String base_url="https://kredivation.com/digdig/API/";
 
 
     public static String SignUp =domain+"signup";
@@ -102,8 +105,8 @@ public class Variables {
     public static String my_liked_video=domain+"my_liked_video";
     public static String follow_users=domain+"follow_users";
     public static String discover=domain+"discover";
-    public static String showVideoComments=domain+"showVideoComments";
-    public static String postComment=domain+"postComment";
+//    public static String showVideoComments=domain+"showVideoComments";
+//    public static String postComment=domain+"postComment";
     public static String edit_profile=domain+"edit_profile";
     public static String get_user_data=domain+"get_user_data";
     public static String get_followers=domain+"get_followers";
@@ -113,8 +116,24 @@ public class Variables {
     public static String uploadImage=domain+"uploadImage";
     public static String DeleteVideo=domain+"DeleteVideo";
 
+    //------new APi------
+    public static String showVideoComments=base_url+"getAllVideoComment.php";
+    public static String postComment=base_url+"postCommentOnvideo.php";
+    public static String sendPushNotificationnew=base_url+"sendPushNotification.php";
+    public static String showAllVideosnew =base_url+"showAllVideos.php";
+    public static String likeDislikeVideoNew=base_url+"likeDislikeVideo.php";
+    public static String showMyAllVideosNew=base_url+"showMyAllVideos.php";
+    public static String my_liked_videoNew=base_url+"myLikedVideos.php";
+    public static String follow_usersNew=base_url+"followUsers.php";
+    public static String get_followingsNew=base_url+"getFollowings.php";
+    public static String get_followersNew=base_url+"getFollowers.php";
+    public static String discoverNew=base_url+"discoverVideo.php";
+    public static String SearchByHashTagNew=base_url+"SearchByHashTag.php";
+    public static String DeleteVideoNew=base_url+"DeleteVideo.php";
+    public static String edit_profileNew=base_url+"EditProfile.php";
+    public static String get_user_dataNew=base_url+"getUserData.php";
+    public static String uploadImageNew=base_url+"UploadImage.php";
 
-
-
+    public static final String OFFLINE_MESSAGE = "Oops! You are Offline. Please check your Internet Connection.";
 
 }

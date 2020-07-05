@@ -49,7 +49,7 @@ import cafe.adriel.androidaudioconverter.AndroidAudioConverter;
 import cafe.adriel.androidaudioconverter.callback.IConvertCallback;
 import cafe.adriel.androidaudioconverter.callback.ILoadCallback;
 import cafe.adriel.androidaudioconverter.model.AudioFormat;
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 public class VideoSound_A extends AppCompatActivity implements View.OnClickListener {
@@ -155,8 +155,7 @@ public class VideoSound_A extends AppCompatActivity implements View.OnClickListe
             DefaultTrackSelector trackSelector = new DefaultTrackSelector();
             player = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
 
-            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this,
-                    Util.getUserAgent(this, "TikTok"));
+            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this,Util.getUserAgent(this, "TikTok"));
 
             MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
                     .createMediaSource(Uri.fromFile(audio_file));

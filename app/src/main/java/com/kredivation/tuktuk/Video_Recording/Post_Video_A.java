@@ -27,7 +27,7 @@ import com.kredivation.tuktuk.SimpleClasses.Variables;
 
 import java.io.File;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 public class Post_Video_A extends AppCompatActivity implements ServiceCallback {
 

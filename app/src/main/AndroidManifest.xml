@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="om.kredivation.tuktuk">
+    package="com.kredivation.tuktuk">
 
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -51,7 +51,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.kredivation.tuktuk.Accounts.Login_A"
+            android:name="com.kredivation.tuktuk.Accounts.LoginAccount"
             tools:ignore="LockedOrientationActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent" />

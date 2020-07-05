@@ -53,7 +53,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 import static com.kredivation.tuktuk.Video_Recording.Video_Recoder_A.Sounds_list_Request_code;
 

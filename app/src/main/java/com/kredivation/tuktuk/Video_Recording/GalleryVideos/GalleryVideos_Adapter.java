@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide;
 import java.io.File;
 import java.util.ArrayList;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 public class GalleryVideos_Adapter extends RecyclerView.Adapter<GalleryVideos_Adapter.CustomViewHolder > {

@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentManager;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.kredivation.tuktuk.SimpleClasses.Variables;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 public class MainMenuActivity extends AppCompatActivity {

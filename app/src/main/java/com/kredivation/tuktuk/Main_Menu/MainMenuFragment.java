@@ -23,7 +23,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.tabs.TabLayout;
-import com.kredivation.tuktuk.Accounts.Login_A;
+import com.kredivation.tuktuk.Accounts.LoginAccount;
 import com.kredivation.tuktuk.Chat.Chat_Activity;
 import com.kredivation.tuktuk.Discover.Discover_F;
 import com.kredivation.tuktuk.Home.Home_F;
@@ -34,7 +34,7 @@ import com.kredivation.tuktuk.Profile.Profile_Tab_F;
 import com.kredivation.tuktuk.SimpleClasses.Variables;
 import com.kredivation.tuktuk.Video_Recording.Video_Recoder_A;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 public class MainMenuFragment extends RootFragment implements View.OnClickListener {
@@ -268,7 +268,7 @@ public class MainMenuFragment extends RootFragment implements View.OnClickListen
 
                 }else {
 
-                    Intent intent = new Intent(getActivity(), Login_A.class);
+                    Intent intent = new Intent(getActivity(), LoginAccount.class);
                     startActivity(intent);
                     getActivity().overridePendingTransition(R.anim.in_from_bottom, R.anim.out_to_top);
                 }
@@ -288,7 +288,7 @@ public class MainMenuFragment extends RootFragment implements View.OnClickListen
 
                 }else {
 
-                    Intent intent = new Intent(getActivity(), Login_A.class);
+                    Intent intent = new Intent(getActivity(), LoginAccount.class);
                     startActivity(intent);
                     getActivity().overridePendingTransition(R.anim.in_from_bottom, R.anim.out_to_top);
                 }

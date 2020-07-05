@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.kredivation.tuktuk.Main_Menu.RelateToFragment_OnBack.RootFragment;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 public class BlankFragment extends RootFragment {

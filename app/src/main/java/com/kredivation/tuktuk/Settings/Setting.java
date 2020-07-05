@@ -14,7 +14,7 @@ import com.kredivation.tuktuk.Main_Menu.MainMenuActivity;
 import com.kredivation.tuktuk.Main_Menu.RelateToFragment_OnBack.RootFragment;
 import com.kredivation.tuktuk.SimpleClasses.Variables;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 /**

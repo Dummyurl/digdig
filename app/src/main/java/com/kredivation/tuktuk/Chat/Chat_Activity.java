@@ -98,7 +98,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 import static android.app.Activity.RESULT_OK;
 

@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 
 
 import nl.changer.audiowife.AudioWife;
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 /**
  * A simple {@link Fragment} subclass.

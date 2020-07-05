@@ -35,9 +35,12 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.LoggingBehavior;
 import com.facebook.Profile;
+import com.facebook.login.BuildConfig;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.gmail.samehadar.iosdialog.IOSDialog;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -52,6 +55,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kredivation.tuktuk.Main_Menu.MainMenuActivity;
+import com.kredivation.tuktuk.R;
 import com.kredivation.tuktuk.SimpleClasses.ApiRequest;
 import com.kredivation.tuktuk.SimpleClasses.Callback;
 import com.kredivation.tuktuk.SimpleClasses.Variables;
@@ -64,9 +68,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-import om.kredivation.tuktuk.R;
 
-public class Login_A extends Activity {
+public class LoginAccount extends Activity {
 
 
     FirebaseAuth mAuth;
@@ -78,7 +81,8 @@ public class Login_A extends Activity {
     View top_view;
 
     TextView login_title_txt;
-
+    // Bottom two function are related to Fb implimentation
+    private CallbackManager mCallbackManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,13 +172,89 @@ public class Login_A extends Activity {
         textView.setText(ss);
         textView.setClickable(true);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
+       /* LoginManager.getInstance()
+                .logInWithReadPermissions(LoginAccount.this,
+                        Arrays.asList("public_profile","email"));
 
+        // initialze the facebook sdk and request to facebook for login
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
+        mCallbackManager = CallbackManager.Factory.create();
+        LoginButton loginButton = findViewById(R.id.login_button);
+        loginButton.setReadPermissions(Arrays.asList("public_profile","email"));
+        // Callback registration
+        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                getUserDetails(loginResult);
+                handleFacebookAccessToken(loginResult.getAccessToken());
+                // Log.d("resp_token",loginResult.getAccessToken()+"");
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(LoginAccount.this, "Login Cancel", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.d("resp",""+error.toString());
+                Toast.makeText(LoginAccount.this, "Login Error"+error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });*/
 
         printKeyHash();
 
+//        Call_Api_For_Signup("","","","","");
 
     }
+    protected void getUserDetails(LoginResult loginResult) {
+        GraphRequest data_request = GraphRequest.newMeRequest(
+                loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(
+                            JSONObject user,
+                            GraphResponse response) {
+                        try {
+//                            user_email.setText(json_object.get("email").toString());
+//                            user_name.setText(json_object.get("name").toString());
+                            JSONObject profile_pic_data = new JSONObject(user.get("picture").toString());
+                            JSONObject profile_pic_url = new JSONObject(profile_pic_data.getString("data"));
+                            String pimg=profile_pic_url.getString("url");
 
+                            final String id = Profile.getCurrentProfile().getId();
+                            Log.d("resp",user.toString());
+                            //after get the info of user we will pass to function which will store the info in our server
+
+                            String fname=""+user.optString("first_name");
+                            String lname=""+user.optString("last_name");
+
+
+                            if(fname.equals("") || fname.equals("null"))
+                                fname=getResources().getString(R.string.app_name);
+
+                            if(lname.equals("") || lname.equals("null"))
+                                lname="";
+
+                            Call_Api_For_Signup(""+id,fname
+                                    ,lname,
+                                    "https://graph.facebook.com/"+id+"/picture?width=500&width=500",
+                                    "facebook");
+
+
+                        }catch (Exception e){
+
+                        }
+                    }
+
+                });
+        // here is the request to facebook sdk for which type of info we have required
+        Bundle permission_param = new Bundle();
+//        permission_param.putString("fields", "id,name,email,picture.width(120).height(120)");
+        permission_param.putString("fields", "id,last_name,first_name,email,picture.width(120).height(120)");
+//        permission_param.putString("fields", "last_name,first_name,email");
+        data_request.setParameters(permission_param);
+        data_request.executeAsync();
+    }
 
     public void Open_Privacy_policy(){
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Variables.privacy_policy));
@@ -201,13 +281,12 @@ public class Login_A extends Activity {
     }
 
 
-    // Bottom two function are related to Fb implimentation
-    private CallbackManager mCallbackManager;
+
     //facebook implimentation
     public void Loginwith_FB(){
 
         LoginManager.getInstance()
-                .logInWithReadPermissions(Login_A.this,
+                .logInWithReadPermissions(LoginAccount.this,
                         Arrays.asList("public_profile","email"));
 
         // initialze the facebook sdk and request to facebook for login
@@ -216,20 +295,21 @@ public class Login_A extends Activity {
         LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>()  {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                handleFacebookAccessToken(loginResult.getAccessToken());
-                Log.d("resp_token",loginResult.getAccessToken()+"");
+//                handleFacebookAccessToken(loginResult.getAccessToken());
+                getUserDetails(loginResult);
+               // Log.d("resp_token",loginResult.getAccessToken()+"");
             }
 
             @Override
             public void onCancel() {
                 // App code
-                Toast.makeText(Login_A.this, "Login Cancel", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginAccount.this, "Login Cancel", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException error) {
                 Log.d("resp",""+error.toString());
-                Toast.makeText(Login_A.this, "Login Error"+error.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginAccount.this, "Login Error"+error.toString(), Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -241,7 +321,7 @@ public class Login_A extends Activity {
         // if user is login then this method will call and
         // facebook will return us a token which will user for get the info of user
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        Log.d("resp_token",token.getToken()+"");
+       // Log.d("resp_token",token.getToken()+"");
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -281,7 +361,7 @@ public class Login_A extends Activity {
                             request.executeAsync();
                         } else {
 
-                            Toast.makeText(Login_A.this, "Authentication failed.",
+                            Toast.makeText(LoginAccount.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
 
@@ -305,14 +385,16 @@ public class Login_A extends Activity {
 
 
 
+
     //google Implimentation
     GoogleSignInClient mGoogleSignInClient;
     public void Sign_in_with_gmail(){
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+//                .requestIdToken("133187621887-1fa8anveb0828nm755ef6u76rsmmdnk2.apps.googleusercontent.com")
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(Login_A.this);
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(LoginAccount.this);
         if (account != null) {
             String id=account.getId();
             String fname=""+account.getGivenName();
@@ -401,7 +483,7 @@ public class Login_A extends Activity {
         JSONObject parameters = new JSONObject();
         try {
 
-            parameters.put("fb_id", id);
+            parameters.put("fb_id", id);//id
             parameters.put("first_name",""+f_name);
             parameters.put("last_name", ""+l_name);
             parameters.put("profile_pic",picture);
@@ -409,6 +491,15 @@ public class Login_A extends Activity {
             parameters.put("version",appversion);
             parameters.put("signup_type",singnup_type);
             parameters.put("device",Variables.device);
+
+//            parameters.put("fb_id", "2375541086024960");//id
+//            parameters.put("first_name","Bijay");
+//            parameters.put("last_name", "Nayak");
+//            parameters.put("profile_pic","https://graph.facebook.com/2375541086024960/picture?width=500&width=500");
+//            parameters.put("gender","m");
+//            parameters.put("version",appversion);
+//            parameters.put("signup_type","facebook");
+//            parameters.put("device",Variables.device);
 
 
         } catch (JSONException e) {

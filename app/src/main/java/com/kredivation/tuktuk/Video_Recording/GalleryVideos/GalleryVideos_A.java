@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 public class GalleryVideos_A extends AppCompatActivity {
 

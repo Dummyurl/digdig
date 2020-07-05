@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 /**
  */

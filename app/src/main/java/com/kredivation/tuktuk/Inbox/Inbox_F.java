@@ -17,8 +17,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,7 +31,7 @@ import com.kredivation.tuktuk.SimpleClasses.Variables;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -118,13 +116,13 @@ public class Inbox_F extends RootFragment {
     }
 
 
-    AdView adView;
-    @Override
+//    AdView adView;
+//    @Override
     public void onStart() {
         super.onStart();
-        adView = view.findViewById(R.id.bannerad);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+//        adView = view.findViewById(R.id.bannerad);
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//        adView.loadAd(adRequest);
     }
 
 

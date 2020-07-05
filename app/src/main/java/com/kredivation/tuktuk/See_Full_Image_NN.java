@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 /**
@@ -93,12 +93,6 @@ public class See_Full_Image_NN extends Fragment {
 
         return view;
     }
-
-
-
-
-
-
 
 }
 

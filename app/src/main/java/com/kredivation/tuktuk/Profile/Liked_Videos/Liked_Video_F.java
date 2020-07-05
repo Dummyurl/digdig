@@ -19,6 +19,7 @@ import com.kredivation.tuktuk.Profile.MyVideos_Adapter;
 import com.kredivation.tuktuk.SimpleClasses.ApiRequest;
 import com.kredivation.tuktuk.SimpleClasses.Callback;
 import com.kredivation.tuktuk.SimpleClasses.Variables;
+import com.kredivation.tuktuk.Utility;
 import com.kredivation.tuktuk.WatchVideos.WatchVideos_NN;
 
 import org.json.JSONArray;
@@ -27,7 +28,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.framework.IAsyncWorkCompletedCallback;
+import com.kredivation.tuktuk.framework.ServiceCaller;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -100,12 +103,8 @@ public class Liked_Video_F extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if(view!=null && isVisibleToUser){
             Call_Api_For_get_Allvideos();
-
-
         }
     }
-
-
     //this will get the all liked videos data of user and then parse the data
     private void Call_Api_For_get_Allvideos() {
 
@@ -116,14 +115,23 @@ public class Liked_Video_F extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        ApiRequest.Call_Api(context, Variables.my_liked_video, parameters, new Callback() {
+        /*ApiRequest.Call_Api(context, Variables.my_liked_video, parameters, new Callback() {
             @Override
             public void Responce(String resp) {
                 Parse_data(resp);
             }
-        });
-
+        });*/
+        if (Utility.isOnline(getActivity())) {
+            ServiceCaller serviceCaller = new ServiceCaller(getActivity());
+            serviceCaller.CallCommanServiceMethod(Variables.my_liked_videoNew, parameters, "Call_Api_For_get_All_Liked_Videos", new IAsyncWorkCompletedCallback() {
+                @Override
+                public void onDone(String result, boolean isComplete) {
+                    Parse_data(result);
+                }
+            });
+        }else {
+            Toast.makeText(context, Variables.OFFLINE_MESSAGE, Toast.LENGTH_SHORT).show();
+        }
 
     }
 

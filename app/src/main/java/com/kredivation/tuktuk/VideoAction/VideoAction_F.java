@@ -29,7 +29,7 @@ import com.kredivation.tuktuk.SimpleClasses.Variables;
 import java.util.Collections;
 import java.util.List;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 /**
@@ -180,7 +180,7 @@ public class VideoAction_F extends BottomSheetDialogFragment implements View.OnC
 
             case R.id.copy_layout:
                 ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("Copied Text", "http://bringthings.com/API/tictic/view.php?id="+video_id);
+                ClipData clip = ClipData.newPlainText("Copied Text", Variables.base_url+"view.php?id="+video_id);
                 clipboard.setPrimaryClip(clip);
 
                 Toast.makeText(context, "Link Copy in clipboard", Toast.LENGTH_SHORT).show();

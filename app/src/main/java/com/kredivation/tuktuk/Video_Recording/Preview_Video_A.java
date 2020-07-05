@@ -39,7 +39,7 @@ import com.kredivation.tuktuk.SimpleClasses.Variables;
 
 import java.util.List;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 public class Preview_Video_A extends AppCompatActivity implements Player.EventListener {
 

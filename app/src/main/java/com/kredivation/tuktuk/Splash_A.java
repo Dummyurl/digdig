@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.kredivation.tuktuk.Main_Menu.MainMenuActivity;
 import com.kredivation.tuktuk.SimpleClasses.Variables;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 public class Splash_A extends AppCompatActivity {

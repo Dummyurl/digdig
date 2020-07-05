@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.kredivation.tuktuk.Main_Menu.RelateToFragment_OnBack.RootFragment;
 import com.kredivation.tuktuk.SimpleClasses.API_CallBack;
 import com.kredivation.tuktuk.SimpleClasses.ApiRequest;
@@ -27,12 +28,16 @@ import com.kredivation.tuktuk.SimpleClasses.Fragment_Data_Send;
 import com.kredivation.tuktuk.SimpleClasses.Functions;
 import com.kredivation.tuktuk.SimpleClasses.Variables;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.Utility;
+import com.kredivation.tuktuk.framework.IAsyncWorkCompletedCallback;
+import com.kredivation.tuktuk.framework.ServiceCaller;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -169,74 +174,133 @@ public class Comment_F extends RootFragment {
 
     // this funtion will get all the comments against post
     public void Get_All_Comments(){
+        if (Utility.isOnline(getActivity())) {
+            JSONObject parameters = new JSONObject();
+            try {
+                parameters.put("video_id", video_id);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            ServiceCaller serviceCaller = new ServiceCaller(getActivity());
+            serviceCaller.CallCommanServiceMethod(Variables.showVideoComments, parameters, "Get_All_Comments", new IAsyncWorkCompletedCallback() {
+                @Override
+                public void onDone(String result, boolean isComplete) {
+                    if (isComplete) {
+                        ArrayList<Comment_Get_Set> arrayList = new ArrayList<>();
+                        try {
+                            JSONObject response = new JSONObject(result);
+                            String code = response.optString("code");
+                            if (code.equals("200")) {
+                                JSONArray msgArray = response.getJSONArray("msg");
+                                for (int i = 0; i < msgArray.length(); i++) {
+                                    JSONObject itemdata = msgArray.optJSONObject(i);
+                                    Comment_Get_Set item = new Comment_Get_Set();
+                                    item.fb_id = itemdata.optString("fb_id");
 
-        Functions.Call_Api_For_get_Comment(getActivity(), video_id, new API_CallBack() {
-            @Override
-            public void ArrayData(ArrayList arrayList) {
-                ArrayList<Comment_Get_Set> arrayList1=arrayList;
-                for(Comment_Get_Set item:arrayList1){
-                     data_list.add(item);
+                                    JSONObject user_info = itemdata.optJSONObject("user_info");
+                                    item.first_name = user_info.optString("first_name");
+                                    item.last_name = user_info.optString("last_name");
+                                    item.profile_pic = user_info.optString("profile_pic");
+
+
+                                    item.video_id = itemdata.optString("id");
+                                    item.comments = itemdata.optString("comments");
+                                    item.created = itemdata.optString("created");
+                                    arrayList.add(item);
+                                }
+                                for (Comment_Get_Set item : arrayList) {
+                                    data_list.add(item);
+                                }
+                                comment_count_txt.setText(data_list.size() + " comments");
+                                adapter.notifyDataSetChanged();
+                            } else {
+                                Toast.makeText(getActivity(), "" + response.optString("msg"), Toast.LENGTH_SHORT).show();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        //Utility.alertForErrorMessage(Contants.Error, MyOrderListActivity.this);
+                    }
                 }
-                comment_count_txt.setText(data_list.size()+" comments");
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void OnSuccess(String responce) {
-
-            }
-
-            @Override
-            public void OnFail(String responce) {
-
-            }
-
-        });
-
+            });
+        } else {
+            Toast.makeText(context, Variables.OFFLINE_MESSAGE, Toast.LENGTH_SHORT).show();
+        }
     }
-
-
-
 
     // this function will call an api to upload your comment
     public void Send_Comments(String video_id, final String comment){
 
-        Functions.Call_Api_For_Send_Comment(getActivity(), video_id,comment ,new API_CallBack() {
-            @Override
-            public void ArrayData(ArrayList arrayList) {
+        if (Utility.isOnline(getActivity())) {
+            JSONObject parameters = new JSONObject();
+            try {
+                parameters.put("fb_id", Variables.sharedPreferences.getString(Variables.u_id,"0"));
+                parameters.put("video_id",video_id);
+                parameters.put("comment",comment);
 
-                ArrayList<Comment_Get_Set> arrayList1=arrayList;
-                for(Comment_Get_Set item:arrayList1){
-                    data_list.add(0,item);
-                    comment_count++;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            ServiceCaller serviceCaller = new ServiceCaller(getActivity());
+            serviceCaller.CallCommanServiceMethod(Variables.postComment, parameters, "Send_Comments", new IAsyncWorkCompletedCallback() {
+                @Override
+                public void onDone(String result, boolean isComplete) {
+                    if (isComplete) {
+                        ArrayList<Comment_Get_Set> arrayList=new ArrayList<>();
+                        try {
+                            JSONObject response=new JSONObject(result);
+                            String code=response.optString("code");
+                            if(code.equals("200")){
+                                JSONArray msgArray=response.getJSONArray("msg");
+                                for (int i=0;i<msgArray.length();i++) {
+                                    JSONObject itemdata = msgArray.optJSONObject(i);
+                                    Comment_Get_Set item=new Comment_Get_Set();
+                                    item.fb_id=itemdata.optString("fb_id");
 
-                    SendPushNotification(getActivity(),user_id,comment);
+                                    JSONObject user_info=itemdata.optJSONObject("user_info");
+                                    item.first_name=user_info.optString("first_name");
+                                    item.last_name=user_info.optString("last_name");
+                                    item.profile_pic=user_info.optString("profile_pic");
 
-                    comment_count_txt.setText(comment_count+" comments");
 
-                    if(fragment_data_send!=null)
-                        fragment_data_send.onDataSent(""+comment_count);
+                                    item.video_id=itemdata.optString("id");
+                                    item.comments=itemdata.optString("comments");
+                                    item.created=itemdata.optString("created");
 
+
+                                    arrayList.add(item);
+                                }
+                                for(Comment_Get_Set item:arrayList){
+                                    data_list.add(0,item);
+                                    comment_count++;
+                                    SendPushNotification(getActivity(),user_id,comment);
+                                    comment_count_txt.setText(comment_count+" comments");
+                                    if(fragment_data_send!=null)
+                                        fragment_data_send.onDataSent(""+comment_count);
+
+                                }
+                                adapter.notifyDataSetChanged();
+                                send_progress.setVisibility(View.GONE);
+                                send_btn.setVisibility(View.VISIBLE);
+
+                            }else {
+                                Toast.makeText(getActivity(), ""+response.optString("msg"), Toast.LENGTH_SHORT).show();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        //Utility.alertForErrorMessage(Contants.Error, MyOrderListActivity.this);
+                    }
                 }
-                adapter.notifyDataSetChanged();
-                send_progress.setVisibility(View.GONE);
-                send_btn.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void OnSuccess(String responce) {
-
-            }
-
-            @Override
-            public void OnFail(String responce) {
-
-            }
-        });
-
+            });
+        } else {
+            Toast.makeText(context, Variables.OFFLINE_MESSAGE, Toast.LENGTH_SHORT).show();
+        }
     }
-
-
 
     public  void SendPushNotification(Activity activity,String user_id,String comment){
 
@@ -251,8 +315,16 @@ public class Comment_F extends RootFragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+//        ApiRequest.Call_Api(context,Variables.sendPushNotificationnew,notimap,null);
+        ServiceCaller serviceCaller = new ServiceCaller(getActivity());
+        serviceCaller.CallCommanServiceMethod(Variables.sendPushNotificationnew, notimap, "SendPushNotification", new IAsyncWorkCompletedCallback() {
+            @Override
+            public void onDone(String result, boolean isComplete) {
+                if (isComplete) {
 
-        ApiRequest.Call_Api(context,Variables.sendPushNotification,notimap,null);
+                }
+            }
+        });
 
     }
 

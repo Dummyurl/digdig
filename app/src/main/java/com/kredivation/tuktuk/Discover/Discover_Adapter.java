@@ -21,7 +21,7 @@ import com.kredivation.tuktuk.SimpleClasses.Variables;
 
 import java.util.ArrayList;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 public class Discover_Adapter extends RecyclerView.Adapter<Discover_Adapter.CustomViewHolder > implements Filterable {
     public Context context;

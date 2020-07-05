@@ -19,7 +19,7 @@ import com.kredivation.tuktuk.SimpleClasses.Variables;
 
 import java.util.ArrayList;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 public class Sounds_Adapter extends RecyclerView.Adapter<Sounds_Adapter.CustomViewHolder >  {

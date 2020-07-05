@@ -31,6 +31,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.kredivation.tuktuk.Utility;
+import com.kredivation.tuktuk.framework.IAsyncWorkCompletedCallback;
+import com.kredivation.tuktuk.framework.ServiceCaller;
 import com.squareup.picasso.Picasso;
 import com.kredivation.tuktuk.Following.Following_F;
 import com.kredivation.tuktuk.Main_Menu.MainMenuActivity;
@@ -48,7 +51,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -144,14 +147,8 @@ public class Profile_Tab_F extends RootFragment implements View.OnClickListener 
                 init();
         }
         if((view!=null && isVisibleToUser) && isdataload){
-
             Call_Api_For_get_Allvideos();
-
         }
-
-
-
-
 
     }
 
@@ -419,16 +416,26 @@ public class Profile_Tab_F extends RootFragment implements View.OnClickListener 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
-
-
-        ApiRequest.Call_Api(context, Variables.showMyAllVideos, parameters, new Callback() {
+       /* ApiRequest.Call_Api(context, Variables.showMyAllVideos, parameters, new Callback() {
             @Override
             public void Responce(String resp) {
                 Parse_data(resp);
             }
-        });
+        });*/
+        if (Utility.isOnline(getActivity())) {
+            Functions.Show_loader(getActivity(),false,false);
+            ServiceCaller serviceCaller = new ServiceCaller(getActivity());
+            serviceCaller.CallCommanServiceMethod(Variables.showMyAllVideosNew, parameters, "Call_Api_For_get_MYAllvideos", new IAsyncWorkCompletedCallback() {
+                @Override
+                public void onDone(String result, boolean isComplete) {
+                    Functions.cancel_loader();
+                    Parse_data(result);
+
+                }
+            });
+        }else {
+            Toast.makeText(context, Variables.OFFLINE_MESSAGE, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void Parse_data(String responce){
@@ -445,10 +452,12 @@ public class Profile_Tab_F extends RootFragment implements View.OnClickListener 
                 username.setText(user_info.optString("first_name")+" "+user_info.optString("last_name"));
 
                 Profile_F.pic_url=user_info.optString("profile_pic");
-                Picasso.with(context)
-                        .load(Profile_F.pic_url)
-                        .placeholder(context.getResources().getDrawable(R.drawable.profile_image_placeholder))
-                        .resize(200,200).centerCrop().into(imageView);
+                if(Profile_F.pic_url!=null && !Profile_F.pic_url.equals("")) {
+                    Picasso.with(context)
+                            .load(Profile_F.pic_url)
+                            .placeholder(context.getResources().getDrawable(R.drawable.profile_image_placeholder))
+                            .resize(200, 200).centerCrop().into(imageView);
+                }
 
                 follow_count_txt.setText(data.optString("total_following"));
                 fans_count_txt.setText(data.optString("total_fans"));
@@ -485,10 +494,7 @@ public class Profile_Tab_F extends RootFragment implements View.OnClickListener 
 
 
     public void Open_Setting(){
-
         Open_menu_tab(setting_btn);
-
-
     }
 
 

@@ -52,7 +52,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 import static android.app.Activity.RESULT_OK;
 

@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.kredivation.tuktuk.Utility;
+import com.kredivation.tuktuk.framework.IAsyncWorkCompletedCallback;
+import com.kredivation.tuktuk.framework.ServiceCaller;
 import com.squareup.picasso.Picasso;
 import com.kredivation.tuktuk.Main_Menu.RelateToFragment_OnBack.RootFragment;
 import com.kredivation.tuktuk.SimpleClasses.API_CallBack;
@@ -60,7 +64,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 import static android.app.Activity.RESULT_OK;
 import static com.kredivation.tuktuk.Main_Menu.MainMenuFragment.hasPermissions;
@@ -381,9 +385,6 @@ public class Edit_Profile_F extends RootFragment implements View.OnClickListener
         }
 
     }
-
-
-
     // this will check the validations like none of the field can be the empty
     public boolean Check_Validation(){
         String firstname=firstname_edit.getText().toString();
@@ -398,8 +399,6 @@ public class Edit_Profile_F extends RootFragment implements View.OnClickListener
 
         return true;
     }
-
-
 
     byte [] image_byte_array;
     public void Save_Image(){
@@ -433,9 +432,6 @@ public class Edit_Profile_F extends RootFragment implements View.OnClickListener
 
 
     public  void Call_Api_For_image(final String image_link) {
-
-
-
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("fb_id", Variables.sharedPreferences.getString(Variables.u_id,"0"));
@@ -445,7 +441,7 @@ public class Edit_Profile_F extends RootFragment implements View.OnClickListener
             e.printStackTrace();
         }
 
-        ApiRequest.Call_Api(context, Variables.uploadImage, parameters, new Callback() {
+       /* ApiRequest.Call_Api(context, Variables.uploadImage, parameters, new Callback() {
             @Override
             public void Responce(String resp) {
                 Functions.cancel_loader();
@@ -473,9 +469,41 @@ public class Edit_Profile_F extends RootFragment implements View.OnClickListener
                 }
 
             }
-        });
+        });*/
+
+        if (Utility.isOnline(getActivity())) {
+            ServiceCaller serviceCaller = new ServiceCaller(getActivity());
+            serviceCaller.CallCommanServiceMethod(Variables.uploadImageNew, parameters, "Call_Api_For_image", new IAsyncWorkCompletedCallback() {
+                @Override
+                public void onDone(String result, boolean isComplete) {
+                    Functions.cancel_loader();
+                    try {
+                        JSONObject response=new JSONObject(result);
+                        String code=response.optString("code");
+                        if(code.equals("200")){
+
+                            Variables.sharedPreferences.edit().putString(Variables.u_pic,image_link).commit();
+                            Profile_F.pic_url=image_link;
+                            Variables.user_pic=image_link;
+
+                            Picasso.with(context)
+                                    .load(Profile_F.pic_url)
+                                    .placeholder(context.getResources().getDrawable(R.drawable.profile_image_placeholder))
+                                    .resize(200,200).centerCrop().into(profile_image);
 
 
+
+                            Toast.makeText(context, "Image Update Successfully", Toast.LENGTH_SHORT).show();
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } else {
+            Toast.makeText(context, Variables.OFFLINE_MESSAGE, Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -484,9 +512,6 @@ public class Edit_Profile_F extends RootFragment implements View.OnClickListener
 
     // this will update the latest info of user in database
     public  void Call_Api_For_Edit_profile() {
-
-        Functions.Show_loader(context,false,false);
-
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("fb_id", Variables.sharedPreferences.getString(Variables.u_id,"0"));
@@ -499,14 +524,13 @@ public class Edit_Profile_F extends RootFragment implements View.OnClickListener
             }else if(female_btn.isChecked()){
                 parameters.put("gender","Female");
             }
-
             parameters.put("bio",user_bio_edit.getText().toString());
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        ApiRequest.Call_Api(context, Variables.edit_profile, parameters, new Callback() {
+        /*ApiRequest.Call_Api(context, Variables.edit_profile, parameters, new Callback() {
             @Override
             public void Responce(String resp) {
                 Functions.cancel_loader();
@@ -530,7 +554,39 @@ public class Edit_Profile_F extends RootFragment implements View.OnClickListener
                     e.printStackTrace();
                 }
             }
-        });
+        });*/
+
+        if (Utility.isOnline(getActivity())) {
+            Functions.Show_loader(context,false,false);
+            ServiceCaller serviceCaller = new ServiceCaller(getActivity());
+            serviceCaller.CallCommanServiceMethod(Variables.edit_profileNew, parameters, "Call_Api_For_Edit_profile", new IAsyncWorkCompletedCallback() {
+                @Override
+                public void onDone(String result, boolean isComplete) {
+                    Functions.cancel_loader();
+                    try {
+                        JSONObject response=new JSONObject(result);
+                        String code=response.optString("code");
+                        if(code.equals("200")) {
+
+                            SharedPreferences.Editor editor = Variables.sharedPreferences.edit();
+
+                            editor.putString(Variables.f_name, firstname_edit.getText().toString());
+                            editor.putString(Variables.l_name, lastname_edit.getText().toString());
+                            editor.commit();
+
+                            Variables.user_name = firstname_edit.getText().toString() + " " + lastname_edit.getText().toString();
+
+                            getActivity().onBackPressed();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } else {
+            Toast.makeText(context, Variables.OFFLINE_MESSAGE, Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -540,9 +596,8 @@ public class Edit_Profile_F extends RootFragment implements View.OnClickListener
 
     // this will get the user data and parse the data and show the data into views
     public void Call_Api_For_User_Details(){
-        Functions.Show_loader(getActivity(),false,false);
-        Functions.Call_Api_For_Get_User_data(getActivity(),
-                Variables.sharedPreferences.getString(Variables.u_id, ""),
+
+        /*Functions.Call_Api_For_Get_User_data(getActivity(),Variables.sharedPreferences.getString(Variables.u_id, ""),
                 new API_CallBack() {
                     @Override
                     public void ArrayData(ArrayList arrayList) {
@@ -559,7 +614,40 @@ public class Edit_Profile_F extends RootFragment implements View.OnClickListener
                     public void OnFail(String responce) {
 
                     }
-                });
+                });*/
+        JSONObject parameters = new JSONObject();
+        try {
+            parameters.put("fb_id", Variables.sharedPreferences.getString(Variables.u_id, ""));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("resp",parameters.toString());
+        if (Utility.isOnline(getActivity())) {
+            Functions.Show_loader(getActivity(),false,false);
+            ServiceCaller serviceCaller = new ServiceCaller(getActivity());
+            serviceCaller.CallCommanServiceMethod(Variables.get_user_dataNew, parameters, "Call_Api_For_User_Details", new IAsyncWorkCompletedCallback() {
+                @Override
+                public void onDone(String result, boolean isComplete) {
+                    Functions.cancel_loader();
+                    try {
+                        JSONObject response=new JSONObject(result);
+                        String code=response.optString("code");
+                        if(code.equals("200")){
+                            Parse_user_data(result);
+                        }
+                        else {
+                            Toast.makeText(getActivity(), ""+response.optString("msg"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } else {
+            Toast.makeText(context, Variables.OFFLINE_MESSAGE, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void Parse_user_data(String responce){

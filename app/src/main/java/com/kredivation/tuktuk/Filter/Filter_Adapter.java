@@ -48,7 +48,7 @@ import jp.co.cyberagent.android.gpuimage.filter.GPUImageToneCurveFilter;
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageVibranceFilter;
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageVignetteFilter;
 import jp.co.cyberagent.android.gpuimage.filter.GPUImageWeakPixelInclusionFilter;
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 // this is the class which will show you a Filters lists when you preview the video

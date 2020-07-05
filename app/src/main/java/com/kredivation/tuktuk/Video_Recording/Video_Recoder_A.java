@@ -52,7 +52,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 public class Video_Recoder_A extends AppCompatActivity implements View.OnClickListener {
 

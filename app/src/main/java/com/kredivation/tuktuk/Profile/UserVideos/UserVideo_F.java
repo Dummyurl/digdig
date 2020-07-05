@@ -22,6 +22,7 @@ import com.kredivation.tuktuk.Profile.MyVideos_Adapter;
 import com.kredivation.tuktuk.SimpleClasses.ApiRequest;
 import com.kredivation.tuktuk.SimpleClasses.Callback;
 import com.kredivation.tuktuk.SimpleClasses.Variables;
+import com.kredivation.tuktuk.Utility;
 import com.kredivation.tuktuk.WatchVideos.WatchVideos_NN;
 
 import org.json.JSONArray;
@@ -30,7 +31,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.framework.IAsyncWorkCompletedCallback;
+import com.kredivation.tuktuk.framework.ServiceCaller;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,10 +92,7 @@ public class UserVideo_F extends Fragment {
 
         no_data_layout=view.findViewById(R.id.no_data_layout);
 
-
         Call_Api_For_get_Allvideos();
-
-
 
         return view;
 
@@ -131,15 +131,25 @@ public class UserVideo_F extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        ApiRequest.Call_Api(context, Variables.showMyAllVideos, parameters, new Callback() {
+       /* ApiRequest.Call_Api(context, Variables.showMyAllVideos, parameters, new Callback() {
             @Override
             public void Responce(String resp) {
                 is_api_run=false;
                 Parse_data(resp);
             }
-        });
-
+        });*/
+        if (Utility.isOnline(getActivity())) {
+            ServiceCaller serviceCaller = new ServiceCaller(getActivity());
+            serviceCaller.CallCommanServiceMethod(Variables.showMyAllVideosNew, parameters, "Call_Api_For_get_Allvideos", new IAsyncWorkCompletedCallback() {
+                @Override
+                public void onDone(String result, boolean isComplete) {
+                    is_api_run=false;
+                    Parse_data(result);
+                }
+            });
+        }else {
+            Toast.makeText(context, Variables.OFFLINE_MESSAGE, Toast.LENGTH_SHORT).show();
+        }
 
     }
 

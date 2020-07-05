@@ -23,6 +23,7 @@ import com.kredivation.tuktuk.Main_Menu.RelateToFragment_OnBack.RootFragment;
 import com.kredivation.tuktuk.SimpleClasses.ApiRequest;
 import com.kredivation.tuktuk.SimpleClasses.Callback;
 import com.kredivation.tuktuk.SimpleClasses.Variables;
+import com.kredivation.tuktuk.Utility;
 import com.kredivation.tuktuk.WatchVideos.WatchVideos_NN;
 
 import org.json.JSONArray;
@@ -31,7 +32,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.framework.IAsyncWorkCompletedCallback;
+import com.kredivation.tuktuk.framework.ServiceCaller;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -138,14 +141,25 @@ public class Discover_F extends RootFragment {
 
         Log.d("resp",parameters.toString());
 
-        ApiRequest.Call_Api(context, Variables.discover, parameters, new Callback() {
+       /* ApiRequest.Call_Api(context, Variables.discover, parameters, new Callback() {
             @Override
             public void Responce(String resp) {
                 Parse_data(resp);
                 swiperefresh.setRefreshing(false);
             }
-        });
-
+        });*/
+        if (Utility.isOnline(getActivity())) {
+            ServiceCaller serviceCaller = new ServiceCaller(getActivity());
+            serviceCaller.CallCommanServiceMethod(Variables.discoverNew, parameters, "Discover_Call_Api_For_get_Allvideos", new IAsyncWorkCompletedCallback() {
+                @Override
+                public void onDone(String result, boolean isComplete) {
+                    Parse_data(result);
+                    swiperefresh.setRefreshing(false);
+                }
+            });
+        }else {
+            Toast.makeText(context, Variables.OFFLINE_MESSAGE, Toast.LENGTH_SHORT).show();
+        }
 
 
     }

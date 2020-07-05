@@ -12,14 +12,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.kredivation.tuktuk.Inbox.Inbox_F;
 import com.kredivation.tuktuk.Main_Menu.RelateToFragment_OnBack.RootFragment;
 
 import java.util.ArrayList;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -79,13 +77,13 @@ public class Notification_F extends RootFragment implements View.OnClickListener
     }
 
 
-    AdView adView;
+//    AdView adView;
     @Override
     public void onStart() {
         super.onStart();
-        adView = view.findViewById(R.id.bannerad);
+     /*   adView = view.findViewById(R.id.bannerad);
         AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        adView.loadAd(adRequest);*/
     }
 
 

@@ -23,6 +23,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.kredivation.tuktuk.Utility;
+import com.kredivation.tuktuk.framework.IAsyncWorkCompletedCallback;
+import com.kredivation.tuktuk.framework.ServiceCaller;
 import com.squareup.picasso.Picasso;
 import com.kredivation.tuktuk.Chat.Chat_Activity;
 import com.kredivation.tuktuk.Following.Following_F;
@@ -42,7 +45,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import om.kredivation.tuktuk.R;
+import com.kredivation.tuktuk.R;
 
 
 // This is the profile screen which is show in 5 tab as well as it is also call
@@ -80,10 +83,6 @@ public class Profile_F extends RootFragment implements View.OnClickListener {
 
 
     public  static String pic_url;
-
-
-
-
     public Profile_F() {
 
     }
@@ -249,7 +248,7 @@ public class Profile_F extends RootFragment implements View.OnClickListener {
 
         if(is_run_first_time){
 
-            Call_Api_For_get_Allvideos();
+            //Call_Api_For_get_Allvideos();
 
         }
 
@@ -316,9 +315,7 @@ public class Profile_F extends RootFragment implements View.OnClickListener {
 
 
     }
-
-
-
+//show user all videos and liked videos
     class ViewPagerAdapter extends FragmentPagerAdapter {
 
         private final Resources resources;
@@ -336,10 +333,10 @@ public class Profile_F extends RootFragment implements View.OnClickListener {
             final Fragment result;
             switch (position) {
                 case 0:
-                    result = new UserVideo_F(user_id);
+                    result = new UserVideo_F(user_id);// Show user videos
                     break;
                 case 1:
-                    result = new Liked_Video_F(user_id);
+                    result = new Liked_Video_F(user_id);// show user liked video
                     break;
 
                 default:
@@ -408,23 +405,33 @@ public class Profile_F extends RootFragment implements View.OnClickListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
-        ApiRequest.Call_Api(context, Variables.showMyAllVideos, parameters, new Callback() {
+       /* ApiRequest.Call_Api(context, Variables.showMyAllVideos, parameters, new Callback() {
             @Override
             public void Responce(String resp) {
                 is_run_first_time=true;
                 Parse_data(resp);
             }
-        });
+        });*/
+        if (Utility.isOnline(getActivity())) {
+            Functions.Show_loader(getActivity(),false,false);
+            ServiceCaller serviceCaller = new ServiceCaller(getActivity());
+            serviceCaller.CallCommanServiceMethod(Variables.showMyAllVideosNew, parameters, "Call_Api_For_get_MYAllvideos", new IAsyncWorkCompletedCallback() {
+                @Override
+                public void onDone(String result, boolean isComplete) {
+                    Functions.cancel_loader();
+                    is_run_first_time=true;
+                    Parse_data(result);
 
+                }
+            });
+        }else {
+            Toast.makeText(context, Variables.OFFLINE_MESSAGE, Toast.LENGTH_SHORT).show();
+        }
 
 
     }
 
     public void Parse_data(String responce){
-
-
         try {
             JSONObject jsonObject=new JSONObject(responce);
             String code=jsonObject.optString("code");
@@ -446,8 +453,7 @@ public class Profile_F extends RootFragment implements View.OnClickListener {
                 heart_count_txt.setText(data.optString("total_heart"));
 
 
-                if(!data.optString("fb_id").
-                        equals(Variables.sharedPreferences.getString(Variables.u_id,""))) {
+                if(!data.optString("fb_id").equals(Variables.sharedPreferences.getString(Variables.u_id,""))) {
 
                     follow_unfollow_btn.setVisibility(View.VISIBLE);
                     JSONObject follow_Status = data.optJSONObject("follow_Status");
@@ -459,10 +465,7 @@ public class Profile_F extends RootFragment implements View.OnClickListener {
                 JSONArray user_videos=data.getJSONArray("user_videos");
                 if(!user_videos.toString().equals("["+"0"+"]")){
                     video_count_txt.setText(user_videos.length()+" Videos");
-
                 }
-
-
 
             }else {
                 Toast.makeText(context, ""+jsonObject.optString("msg"), Toast.LENGTH_SHORT).show();
@@ -478,14 +481,8 @@ public class Profile_F extends RootFragment implements View.OnClickListener {
 
 
     public void Open_Setting(){
-
         Open_Chat_F();
-
     }
-
-
-
-
 
 
     public  String follow_status="0";
@@ -498,14 +495,11 @@ public class Profile_F extends RootFragment implements View.OnClickListener {
             send_status="0";
         }
 
-        Functions.Call_Api_For_Follow_or_unFollow(getActivity(),
-                Variables.sharedPreferences.getString(Variables.u_id,""),
-                user_id,
+      /*  Functions.Call_Api_For_Follow_or_unFollow(getActivity(),Variables.sharedPreferences.getString(Variables.u_id,""),user_id,
                 send_status,
                 new API_CallBack() {
                     @Override
                     public void ArrayData(ArrayList arrayList) {
-
 
                     }
 
@@ -530,7 +524,51 @@ public class Profile_F extends RootFragment implements View.OnClickListener {
 
                     }
 
-                });
+                });*/
+        JSONObject parameters = new JSONObject();
+        try {
+            parameters.put("fb_id", Variables.sharedPreferences.getString(Variables.u_id,""));
+            parameters.put("followed_fb_id",user_id);
+            parameters.put("status",send_status);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (Utility.isOnline(getActivity())) {
+            Functions.Show_loader(getActivity(),false,false);
+            ServiceCaller serviceCaller = new ServiceCaller(getActivity());
+            serviceCaller.CallCommanServiceMethod(Variables.follow_usersNew, parameters, "Follow_unFollow_User", new IAsyncWorkCompletedCallback() {
+                @Override
+                public void onDone(String result, boolean isComplete) {
+                    Functions.cancel_loader();
+                    try {
+                        JSONObject response=new JSONObject(result);
+                        String code=response.optString("code");
+                        if(code.equals("200")){
+                            if(send_status.equals("1")){
+                                follow_unfollow_btn.setText("UnFollow");
+                                follow_status="1";
+
+                            }
+                            else if(send_status.equals("0")){
+                                follow_unfollow_btn.setText("Follow");
+                                follow_status="0";
+                            }
+
+                            Call_Api_For_get_Allvideos();
+                        }
+                        else {
+                            Toast.makeText(getActivity(), ""+response.optString("msg"), Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }else {
+            Toast.makeText(context, Variables.OFFLINE_MESSAGE, Toast.LENGTH_SHORT).show();
+        }
 
 
     }
@@ -552,8 +590,6 @@ public class Profile_F extends RootFragment implements View.OnClickListener {
             transaction.replace(R.id.MainMenuFragment, see_image_f).commit();
         else
             transaction.replace(R.id.Profile_F, see_image_f).commit();
-
-
     }
 
 
